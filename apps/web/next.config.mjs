@@ -15,18 +15,22 @@ const withMDX = nextMdx();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  
+  // External packages configuration
+  // Keeping within experimental as it's still expected there in Next.js 14
   experimental: {
     serverComponentsExternalPackages: ["@sentry/nextjs", "@sentry/node"],
-    instrumentationHook: true,
-    turbo: {
-      rules: {
-        "*.svg": {
-          loaders: ["@svgr/webpack"],
-          as: "*.js",
-        },
-      },
-    },
+  },
+  
+  // Replaced experimental.turbo with standard webpack configuration
+  // This addresses the warning: "The config property `experimental.turbo` is deprecated"
+  webpack(config) {
+    // SVG configuration - replaces the old turbo.rules configuration
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"],
+    });
+    return config;
   },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {

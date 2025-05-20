@@ -35,7 +35,7 @@ async function analyzePageWithAI(pageContent: string): Promise<PageAnalysis> {
     );
   }
 
-  const model = getModel("google");
+  const model = getModel(); // Will use default provider which prefers Ollama if available
 
   const prompt = `
     Analyze the following HTML content and determine the actions needed to unsubscribe from an email newsletter.

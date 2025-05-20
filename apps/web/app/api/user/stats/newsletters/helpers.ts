@@ -30,10 +30,22 @@ export function findAutoArchiveFilter(
 }
 
 export async function findNewsletterStatus(userId: string) {
-  const userNewsletters = await prisma.newsletter.findMany({
+  // Get all email accounts for this user
+  const emailAccounts = await prisma.emailAccount.findMany({
     where: { userId },
+    select: { id: true },
+  });
+
+  // Get newsletters for all user's email accounts
+  const userNewsletters = await prisma.newsletter.findMany({
+    where: {
+      emailAccountId: {
+        in: emailAccounts.map((account) => account.id),
+      },
+    },
     select: { email: true, status: true },
   });
+
   return userNewsletters;
 }
 
